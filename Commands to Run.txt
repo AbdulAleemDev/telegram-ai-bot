@@ -1,0 +1,8 @@
+
+Backend
+.\venv\Scripts\Activate.ps1
+uvicorn app.main:app --reload --port 8000
+or
+py -m uvicorn app.main:app --reload --port 8000
+ngrok
+.\ngrok.exe http 8000
