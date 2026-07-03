@@ -1,6 +1,6 @@
 import logging
 from contextlib import asynccontextmanager
-
+from app.core.telegram import register_webhook
 from fastapi import FastAPI, Request
 
 from app.api.webhook import router
@@ -22,13 +22,17 @@ async def lifespan(app: FastAPI):
         logger.error("Fix .env and restart the server.")
     else:
         logger.info("Configuration OK")
+
+        # ✅ AUTO REGISTER TELEGRAM WEBHOOK ON STARTUP
+        await register_webhook()
+        logger.info("Webhook registered successfully")
+
         logger.info("Webhook mode: run uvicorn, expose HTTPS, then set webhook")
         logger.info("Local dev: use  python scripts/run_polling.py  instead")
 
     logger.info("Server started - waiting for requests...")
+
     yield
-
-
 app = FastAPI(title="Telegram AI Bot", lifespan=lifespan)
 
 app.include_router(router)
