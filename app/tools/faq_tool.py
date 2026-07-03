@@ -2,7 +2,9 @@ from langchain_core.tools import tool
 
 
 FAQ_DATA = {
-    "business hours": "We are open Monday to Saturday from 9:00 AM to 6:00 PM.",
+    "business hours": (
+        "We are open Monday to Saturday from 9:00 AM to 6:00 PM."
+    ),
 
     "return policy": (
         "You can return products within 7 days of delivery "
@@ -39,8 +41,7 @@ FAQ_DATA = {
     ),
 
     "warranty": (
-        "Yes, selected products include a 12-month "
-        "manufacturer's warranty."
+        "Selected products include a 12-month manufacturer's warranty."
     ),
 }
 
@@ -48,17 +49,34 @@ FAQ_DATA = {
 @tool
 def faq_tool(question: str) -> str:
     """
-    Answer customer questions related to business policies,
-    shipping, payment, delivery, warranty, and FAQs.
+    Answer business FAQ questions.
+
+    Use this tool whenever a customer asks about:
+
+    - Shipping charges
+    - Delivery time
+    - Payment methods
+    - Cash on Delivery (COD)
+    - Returns
+    - Refund policy
+    - Warranty
+    - Order tracking
+    - Business hours
+    - Delivery locations
+
+    Do NOT use this tool for:
+    - Complaints
+    - Damaged products
+    - Order cancellation
+    - Human support requests
     """
 
-    question = question.lower()
+    question = question.lower().strip()
 
     for keyword, answer in FAQ_DATA.items():
         if keyword in question:
             return answer
 
     return (
-        "Sorry, I couldn't find information related to that question "
-        "in our knowledge base."
+        "Sorry, I couldn't find information about that in our business knowledge base."
     )
