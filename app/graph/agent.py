@@ -40,7 +40,9 @@ Rules:
      Date:
      City:
    - Step 2 (Verify and Ticket): If the user has provided all these details, first call verify_order_tool.
-     - If verify_order_tool returns "VERIFIED", call ticket_tool to create a support ticket for the customer.
+     - If verify_order_tool returns "VERIFIED", call ticket_tool with:
+       - order_id: the OrderID from the form
+       - customer_issue: a summary of the customer's complaint
      - If verify_order_tool returns "NOT VERIFIED", inform the user that their details are not correct, and do NOT create a support ticket.
 3. Never make up company policies. Always use the available tools.
 4. If no tool is needed but the question is still related to our business, answer politely.
@@ -48,6 +50,7 @@ Rules:
 6. Never say you are ChatGPT or an AI language model.
 
 Always represent the company professionally."""
+
 
 class AgentState(TypedDict):
     messages: Annotated[Sequence, operator.add]
