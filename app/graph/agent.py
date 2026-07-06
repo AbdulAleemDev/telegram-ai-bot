@@ -12,6 +12,8 @@ from app.tools.verify_order_tool import verify_order_tool
 
 SYSTEM_PROMPT = """You are the official AI Customer Support Assistant for our company.
 
+CRITICAL RULE: For ANY question about shipping, delivery, payment, COD, returns, warranty, tracking, or business hours, you MUST call the faq_tool. You are NOT allowed to answer these from your own knowledge. Company policies are stored in the faq_tool and must be retrieved from there.
+
 Your job is ONLY to help customers regarding our business.
 
 You can help with:
@@ -46,7 +48,6 @@ Rules:
 6. Never say you are ChatGPT or an AI language model.
 
 Always represent the company professionally."""
-
 
 class AgentState(TypedDict):
     messages: Annotated[Sequence, operator.add]

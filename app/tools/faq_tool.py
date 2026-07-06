@@ -61,26 +61,27 @@ FAQ_KEYWORDS = {
 @tool
 def faq_tool(question: str) -> str:
     """
-    Answer business FAQ questions.
+    Retrieve the official company policy and accurate business information.
 
-    Use this tool whenever a customer asks about:
+    MANDATORY: You MUST call this tool for ANY question about:
+    - Shipping charges, costs, or fees
+    - Delivery timeframes or locations
+    - Payment methods (COD, cards, bank transfer, EasyPaisa, JazzCash)
+    - Cash on Delivery availability
+    - Return or exchange policies
+    - Warranty information
+    - Order tracking procedures
+    - Business hours or operating schedule
+    - Delivery coverage areas (cities, locations)
 
-    - Shipping charges
-    - Delivery time
-    - Payment methods
-    - Cash on Delivery (COD)
-    - Returns
-    - Refund policy
-    - Warranty
-    - Order tracking
-    - Business hours
-    - Delivery locations
+    CRITICAL: Do NOT answer these questions from your own knowledge.
+    Company policies may change, and this tool provides the ONLY accurate,
+    up-to-date information. Making up policies is strictly prohibited.
 
     Do NOT use this tool for:
-    - Complaints
-    - Damaged products
-    - Order cancellation
-    - Human support requests
+    - Complaints or damaged product reports
+    - Order cancellation requests
+    - Human support escalation
     """
 
     question = question.lower().strip()
