@@ -11,11 +11,11 @@ from app.database.models import CustomerOrder
 def verify_order_tool(
     name: str,
     order_id: str,
-    item: str,
     date_purchased: str,
+    city: str,
 ) -> str:
     """
-    Verify a customer's order before creating a support ticket.
+    Verify a customer's order details before creating a support ticket.
 
     Returns:
     VERIFIED
@@ -28,7 +28,7 @@ def verify_order_tool(
     try:
         try:
             purchase_date = datetime.strptime(
-                date_purchased,
+                date_purchased.strip(),
                 "%Y-%m-%d"
             ).date()
 
@@ -38,9 +38,9 @@ def verify_order_tool(
         order = (
             db.query(CustomerOrder)
             .filter(
-                CustomerOrder.name == name,
-                CustomerOrder.order_id == order_id,
-                CustomerOrder.purchased_item == item,
+                func.lower(CustomerOrder.name) == name.lower().strip(),
+                func.lower(CustomerOrder.order_id) == order_id.lower().strip(),
+                func.lower(CustomerOrder.city) == city.lower().strip(),
                 func.date(CustomerOrder.date) == purchase_date,
             )
             .first()
