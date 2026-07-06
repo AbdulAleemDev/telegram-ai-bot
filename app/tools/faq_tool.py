@@ -45,6 +45,18 @@ FAQ_DATA = {
     ),
 }
 
+FAQ_KEYWORDS = {
+    "business hours": ["hour", "hours", "open", "close", "timing", "timings", "schedule", "time"],
+    "return policy": ["return", "returns", "policy", "exchange", "replace", "replacement"],
+    "deliver to lahore": ["lahore", "karachi", "islamabad", "faisalabad", "multan", "rawalpindi", "peshawar", "quetta", "location", "locations", "city", "cities", "destination", "destinations", "where do you deliver", "deliver to"],
+    "shipping": ["shipping", "ship", "charge", "charges", "fee", "fees", "cost", "costs", "price", "prices", "free"],
+    "delivery": ["delivery", "deliveries", "deliver", "day", "days", "time", "duration", "how long", "arrive", "when will", "receive"],
+    "payment": ["payment", "payments", "pay", "card", "cards", "bank", "transfer", "credit", "debit", "easypaisa", "jazzcash"],
+    "track": ["track", "tracking", "status", "where is my order", "order status"],
+    "cod": ["cod", "cash on delivery", "cash"],
+    "warranty": ["warranty", "warranties", "guarantee", "guarantees", "warranty period"],
+}
+
 
 @tool
 def faq_tool(question: str) -> str:
@@ -73,9 +85,20 @@ def faq_tool(question: str) -> str:
 
     question = question.lower().strip()
 
-    for keyword, answer in FAQ_DATA.items():
-        if keyword in question:
-            return answer
+    best_key = None
+    max_score = 0
+
+    for key, keywords in FAQ_KEYWORDS.items():
+        score = 0
+        for kw in keywords:
+            if kw in question:
+                score += len(kw)  # Weight by keyword length
+        if score > max_score:
+            max_score = score
+            best_key = key
+
+    if best_key and max_score > 0:
+        return FAQ_DATA[best_key]
 
     return (
         "Sorry, I couldn't find information about that in our business knowledge base."
