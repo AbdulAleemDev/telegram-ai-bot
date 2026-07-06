@@ -7,6 +7,7 @@ import operator
 from app.core.ai import llm
 from app.tools.faq_tool import faq_tool
 from app.tools.ticket_tool import ticket_tool
+from app.tools.verify_order_tool import verify_order_tool
 
 
 SYSTEM_PROMPT = """You are the official AI Customer Support Assistant for our company.
@@ -29,7 +30,7 @@ You can help with:
 
 Rules:
 1. If the customer asks about shipping, delivery, payment, COD, returns, warranty, tracking, or business hours — call faq_tool.
-2. If the customer has a complaint, damaged product, refund issue, cancellation request, or requests a human — call ticket_tool.
+2. If the customer reports a damaged product, wants to cancel an order, has a complaint, requests a refund, reports a missing or incorrect item,or asks to speak with a human agent:
 3. Never make up company policies. Always use the available tools.
 4. If no tool is needed but the question is still related to our business, answer politely.
 5. If the user's question is NOT related to our business, politely redirect them.
@@ -42,7 +43,11 @@ class AgentState(TypedDict):
     messages: Annotated[Sequence, operator.add]
 
 
-tools = [faq_tool, ticket_tool]
+tools = [
+    faq_tool,
+    verify_order_tool,
+    ticket_tool,
+]
 llm_with_tools = llm.bind_tools(tools, tool_choice="auto")
 
 
@@ -74,8 +79,22 @@ workflow.add_edge("tools", "agent")
 agent = workflow.compile()
 
 
-def run_agent(user_message: str) -> str:
+from langchain_core.messages import HumanMessage
+
+from app.services.chat_memory import get_history, save_history
+
+
+def run_agent(chat_id: int | str, user_message: str) -> str:
+    history = get_history(chat_id)
+
+    history.append(HumanMessage(content=user_message))
+
     result = agent.invoke({
-        "messages": [HumanMessage(content=user_message)]
+        "messages": history
     })
-    return result["messages"][-1].content
+
+    history = result["messages"]
+
+    save_history(chat_id, history)
+
+    return history[-1].content

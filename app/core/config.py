@@ -9,6 +9,9 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 TELEGRAM_WEBHOOK_SECRET = os.getenv("TELEGRAM_WEBHOOK_SECRET")
 
+# Database
+DATABASE_URL = os.getenv("DATABASE_URL")
+
 
 def validate_config() -> list[str]:
     """Return a list of configuration problems."""
@@ -24,5 +27,8 @@ def validate_config() -> list[str]:
             "TELEGRAM_BOT_TOKEN looks invalid. It should look like "
             "123456789:ABCdefGHI... (copy the full token from @BotFather)"
         )
+
+    if not DATABASE_URL:
+        errors.append("DATABASE_URL is missing from .env")
 
     return errors

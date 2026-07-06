@@ -20,7 +20,7 @@ def handle_message(user_message: str, chat_id: int | str) -> str:
     try:
         logger.info("🤖 Running LangGraph Agent...")
 
-        reply = run_agent(user_message)
+        reply = run_agent(chat_id, user_message)
 
         logger.info("✅ Agent Response:")
         logger.info("%s", reply)
