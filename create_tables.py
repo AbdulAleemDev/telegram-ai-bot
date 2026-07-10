@@ -1,10 +1,7 @@
-from app.core.database import engine
 from app.database.base import Base
+from app.core.database import engine
+from app.database.models import CustomerOrder, Order, Ticket
 
-# Import all models
-from app.database.models import CustomerOrder, Ticket
-
-# Create all tables
+print("Creating tables...")
 Base.metadata.create_all(bind=engine)
-
-print("✅ Tables created successfully!")
+print("Done.")

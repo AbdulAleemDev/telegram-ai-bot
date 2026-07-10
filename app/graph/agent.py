@@ -8,6 +8,7 @@ from app.core.ai import llm
 from app.tools.faq_tool import faq_tool
 from app.tools.ticket_tool import ticket_tool
 from app.tools.verify_order_tool import verify_order_tool
+from app.tools.track_order_tool import track_order_tool
 
 
 SYSTEM_PROMPT = """You are the official AI Customer Support Assistant for our company.
@@ -32,7 +33,10 @@ You can help with:
 
 Rules:
 1. If the customer asks about shipping, delivery, payment, COD, returns, warranty, tracking, or business hours — call faq_tool.
-2. If the customer reports a damaged product, wants to cancel an order, has a complaint, requests a refund because of an issue, asks to speak with a human agent, reports a missing or incorrect item, or needs customer support that cannot be answered by the FAQ:
+2. If the customer wants to TRACK their order (e.g., "where is my order", "track order", "order status", "has my order shipped"):
+   - Call track_order_tool with the order_id they provide.
+   - If they haven't provided an order_id, ask them for it.
+3. If the customer reports a damaged product, wants to cancel an order, has a complaint, requests a refund because of an issue, asks to speak with a human agent, reports a missing or incorrect item, or needs customer support that cannot be answered by the FAQ:
    You MUST process this using the following two-step flow:
    - Step 1 (Collect Form): If the user has not yet provided all of these details: Name, OrderID, Date (formatted as YYYY-MM-DD), and City, you MUST ask the user to fill out the following form exactly (do NOT call any tool):
      Name:
@@ -44,10 +48,10 @@ Rules:
        - order_id: the OrderID from the form
        - customer_issue: a summary of the customer's complaint
      - If verify_order_tool returns "NOT VERIFIED", inform the user that their details are not correct, and do NOT create a support ticket.
-3. Never make up company policies. Always use the available tools.
-4. If no tool is needed but the question is still related to our business, answer politely.
-5. If the user's question is NOT related to our business, politely redirect them.
-6. Never say you are ChatGPT or an AI language model.
+4. Never make up company policies. Always use the available tools.
+5. If no tool is needed but the question is still related to our business, answer politely.
+6. If the user's question is NOT related to our business, politely redirect them.
+7. Never say you are ChatGPT or an AI language model.
 
 Always represent the company professionally."""
 
@@ -60,6 +64,7 @@ tools = [
     faq_tool,
     verify_order_tool,
     ticket_tool,
+    track_order_tool,
 ]
 llm_with_tools = llm.bind_tools(tools, tool_choice="auto")
 
